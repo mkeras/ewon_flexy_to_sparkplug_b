@@ -80,6 +80,16 @@ def on_spb_message(client, userdata, message):
     except Exception as err:
         warning(err)
 
+def device_birth_metrics() -> list[spb_dataclasses.Metric]:
+    return [
+        spb_dataclasses.Metric(
+            name='Device Control/Rebirth',
+            timestamp=spb.millis(),
+            value=False,
+            datatype=DataTypes.Boolean
+        )
+    ]
+
 
 def spb_dcmd(client, userdata, message):
     payload = spb_dataclasses.Payload.from_mqtt_payload(message.payload)
@@ -121,6 +131,7 @@ def on_message(client, userdata, message):
     if topic.message_type == flexy_v1_0.FlexyMessageTypes.STATE:
         if message.payload == b'ONLINE':
             client.publish(topic.base_topic + 'CMD', 'REBIRTH')
+            return
 
     elif topic.message_type == flexy_v1_0.FlexyMessageTypes.CMD:
         # Ignore flexy commands
@@ -134,8 +145,17 @@ def on_message(client, userdata, message):
         timestamp=int(time.time() * 1000),
         seq=PAYLOAD_SEQUENCER()
     )
+
+    metrics = []
+
+    if topic.message_type == flexy_v1_0.FlexyMessageTypes.BIRTH:
+        metrics.extend(device_birth_metrics())
+
     if spb_metrics:
-        payload['metrics'] = [spb_dataclasses.Metric(**m, is_historical=True) for m in spb_metrics]
+        metrics.extend([spb_dataclasses.Metric(**m, is_historical=True) for m in spb_metrics])
+
+    if metrics:
+        payload['metrics'] = metrics
 
     payload = spb_dataclasses.Payload(**payload)
     client.publish(spb_topic, payload.serialize())
