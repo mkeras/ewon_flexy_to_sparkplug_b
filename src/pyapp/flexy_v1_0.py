@@ -163,7 +163,7 @@ def flexy_to_sparkplug(topic: FlexyTopic, payload: bytes):
 
     if topic.message_type == FlexyMessageTypes.STATE:
         if payload == 'OFFLINE':
-            spb_topic = f'spBv1.0/{cfg.SPARKPLUG_GROUP_ID}/DDEATH/{cfg.SPARKPLUG_EDGE_NODE_ID}/{topic.device_id}'
+            spb_topic = f'spBv1.0/{cfg.SPARKPLUG_GROUP_ID}/DDEATH/{cfg.SPARKPLUG_EDGE_NODE_ID}/{device_id}'
             return spb_topic, None
         return None, None
 
