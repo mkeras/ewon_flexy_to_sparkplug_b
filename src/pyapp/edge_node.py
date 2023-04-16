@@ -152,7 +152,7 @@ def on_message(client, userdata, message):
         metrics.extend(device_birth_metrics())
 
     if spb_metrics:
-        metrics.extend([spb_dataclasses.Metric(**m, is_historical=True) for m in spb_metrics])
+        metrics.extend([spb_dataclasses.Metric(**m) for m in spb_metrics])
 
     if metrics:
         payload['metrics'] = metrics
