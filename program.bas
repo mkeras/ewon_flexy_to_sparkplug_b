@@ -100,6 +100,7 @@ FUNCTION PublishAllTags()
   //PRINT $payload$
   MQTT "publish", mqtt_base_topic$ + 'BIRTH', $payload$, 0, 0
 ENDFN
+
 FUNCTION ReadTags()
   FOR $n% = 1 To no_tags%
     tags_values_prev(1, $n%) = tags_values(1, $n%)
@@ -158,19 +159,20 @@ FOR x% = 0 To no_tags% -1
 NEXT x%
 // User defined Variables
 mqtt_namespace$ = "flexy_v1.0"
-mqtt_host$ = "<broker url>"
-mqtt_port$ = "<broker port>"
+mqtt_host$ = "mqtt.iono2x.com"
+mqtt_port$ = "8873"
 username$ = "ewon_flexy_" + flexy_serial$
-password$ = "<broker password>"
-ca_file_path$ = "/usr/<path to cert>"
-
-group_id$ = "<group_id for flexy>"
-node_id$ = "<node_id for flexy>"
+password$ = "1zVxXdyviFyjurUk4pGW"
+ca_file_path$ = "/usr/certs/mqtt.iono2x.com.crt"
+PRINT no_tags%
+group_id$ = "kerry_foods"
+node_id$ = "iono2x_2021-214"
 device_id$ = username$
+
 mqtt_base_topic$ = mqtt_namespace$ + "/" + group_id$ + "/" + node_id$ + "/" + device_id$ + "/"
 mqtt_client$ = group_id$ + "_" + node_id$ + "_" + device_id$
 mqtt_state_topic$ = mqtt_base_topic$ + "STATE"
-poll_seconds% = 12
+poll_seconds% = 20
 
 @Start()
 Rem --- eWON user (end)
